@@ -34,13 +34,17 @@ export default function PortalLogin() {
     setError('');
     setLoading(true);
 
-    const res = await login(email, password);
-    setLoading(false);
-
-    if (res.success) {
-      navigate('/portal/dashboard');
-    } else {
-      setError(res.message);
+    try {
+      const res = await login(email, password);
+      if (res.success) {
+        navigate('/portal/dashboard');
+      } else {
+        setError(res.message || 'Login failed');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,13 +54,17 @@ export default function PortalLogin() {
     setError('');
     setLoading(true);
 
-    const res = await login(demoEmail, demoPassword);
-    setLoading(false);
-
-    if (res.success) {
-      navigate('/portal/dashboard');
-    } else {
-      setError(res.message);
+    try {
+      const res = await login(demoEmail, demoPassword);
+      if (res.success) {
+        navigate('/portal/dashboard');
+      } else {
+        setError(res.message || 'Login failed');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 

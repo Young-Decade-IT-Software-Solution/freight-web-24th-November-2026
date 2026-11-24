@@ -42,18 +42,25 @@ export const PortalAuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const res = await portalApi.post('/auth/login', { email, password });
-    if (res.data?.success) {
-      const { token: newToken, user: newUser, customer: newCustomer } = res.data;
-      setPortalToken(newToken);
-      setPortalUser(newUser);
-      setPortalCustomer(newCustomer);
-      localStorage.setItem('freighterp_portal_token', newToken);
-      localStorage.setItem('freighterp_portal_user', JSON.stringify(newUser));
-      localStorage.setItem('freighterp_portal_customer', JSON.stringify(newCustomer));
-      return { success: true };
+    try {
+      const res = await portalApi.post('/auth/login', { email, password });
+      if (res.data?.success) {
+        const { token: newToken, user: newUser, customer: newCustomer } = res.data;
+        setPortalToken(newToken);
+        setPortalUser(newUser);
+        setPortalCustomer(newCustomer);
+        localStorage.setItem('freighterp_portal_token', newToken);
+        localStorage.setItem('freighterp_portal_user', JSON.stringify(newUser));
+        localStorage.setItem('freighterp_portal_customer', JSON.stringify(newCustomer));
+        return { success: true };
+      }
+      return { success: false, message: res.data?.message || 'Login failed' };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || err.message || 'Login failed',
+      };
     }
-    return { success: false, message: res.data?.message || 'Login failed' };
   };
 
   const loginWithSession = (token, user, customer) => {

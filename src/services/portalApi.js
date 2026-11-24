@@ -1,7 +1,16 @@
 import axios from 'axios';
 
+const getPortalBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+  if (envUrl) {
+    const cleanUrl = envUrl.replace(/\/+$/, '');
+    return cleanUrl.endsWith('/portal') ? cleanUrl : `${cleanUrl}/portal`;
+  }
+  return '/api/portal';
+};
+
 const portalApi = axios.create({
-  baseURL: '/api/portal',
+  baseURL: getPortalBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
